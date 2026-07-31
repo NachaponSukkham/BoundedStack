@@ -21,6 +21,7 @@ public class InventoryTest {
 
         testCreator();
         testInventoryFromList();
+        testContains();
 
         System.out.println();
         System.out.println("Passed: " + passed);
@@ -28,14 +29,14 @@ public class InventoryTest {
     }
 
     private static void testCreator() {
-        System.out.println("Creator");
+        System.out.println("-- Creator --");
         Inventory inv = new Inventory();
         check("new inventory created", inv != null);
         check("new inventory size = 0", inv.size() == 0);
     }
 
     private static void testInventoryFromList() {
-        System.out.println("Inventory From List");
+        System.out.println("-- Inventory From List --");
 
         // Test 1: สร้างด้วย Potion และ Sword (size = 2)
         try {
@@ -92,5 +93,96 @@ public class InventoryTest {
             test6Passed = true;
         }
         check("Test 6: 21 items exceeds max slots throws exception", test6Passed);
+
+        // Test 7: ชื่อไอเทมซ้ำกัน (ติดกัน) ต้อง throw IllegalArgumentException
+        boolean testDuplicatePassed = false;
+        try {
+            new Inventory(
+                Arrays.asList(
+                    "Potion",
+                    "Potion"
+                )
+            );
+        } catch (IllegalArgumentException e) {
+            testDuplicatePassed = true;
+        }
+        check(
+            "duplicate item names throw exception",
+            testDuplicatePassed
+        );
+
+        // Test 8: Single item (1 item valid minimum non-empty)
+        try {
+            Inventory invSingle = new Inventory(Arrays.asList("Potion"));
+            check("Test 8: single item inventory size = 1", invSingle.size() == 1);
+        } catch (Exception e) {
+            check("Test 8: single item inventory size = 1", false);
+        }
+
+        // Test 9: 20 items พอดี (Boundary valid MAX_SLOTS)
+        try {
+            List<String> maxItems = new ArrayList<>();
+            for (int i = 1; i <= 20; i++) {
+                maxItems.add("Item" + i);
+            }
+            Inventory invMax = new Inventory(maxItems);
+            check("Test 9: 20 items allowed", invMax.size() == 20);
+        } catch (Exception e) {
+            check("Test 9: 20 items allowed", false);
+        }
+
+        // Test 10: Duplicate แบบไม่ติดกัน ต้อง throw
+        boolean testNonAdjacentDuplicatePassed = false;
+        try {
+            new Inventory(
+                Arrays.asList(
+                    "Potion",
+                    "Sword",
+                    "Potion"
+                )
+            );
+        } catch (IllegalArgumentException e) {
+            testNonAdjacentDuplicatePassed = true;
+        }
+        check("Test 10: non-adjacent duplicate throws exception", testNonAdjacentDuplicatePassed);
+
+        // Test 11: Defensive Copy (modify original list after constructor call)
+        try {
+            List<String> source =
+                new ArrayList<>(
+                    Arrays.asList(
+                        "Potion",
+                        "Sword"
+                    )
+                );
+
+            Inventory inv =
+                new Inventory(source);
+
+            source.add("Apple");
+
+            check(
+                "Test 11: modifying source list does not affect inventory",
+                inv.size() == 2
+            );
+
+        } catch (Exception e) {
+            check(
+                "Test 11: modifying source list does not affect inventory",
+                false
+            );
+        }
+    }
+
+    private static void testContains() {
+        System.out.println("-- Contains Observer --");
+
+        Inventory inv = new Inventory(Arrays.asList("Potion", "Sword"));
+
+        // Test 12: contains existing item
+        check("Test 12: contains existing item (Potion)", inv.contains("Potion"));
+
+        // Test 13: does not contain missing item
+        check("Test 13: does not contain missing item (Shield)", !inv.contains("Shield"));
     }
 }
