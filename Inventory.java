@@ -18,8 +18,8 @@ import java.util.Set;
  * - กระเป๋ามีช่องเก็บของจำกัด ห้ามเก็บของเกินจำนวนช่อง
  * - ของชนิดเดียวกันต้องไม่ถูกแยกเป็นหลายช่อง ชื่อไอเทมในแต่ละช่องห้ามซ้ำกัน
  * 
- * Safety from Rep Exposure ระบบรักษาความปลอดภัย: 
- * กระเป๋าใบนี้ถูกล็อคไว้ ระบบภายนอกจะไม่สามารถเข้ามาล้วงหรือแอบแก้ไขข้อมูล
+ * ระบบรักษาความปลอดภัย (Safety from Rep Exposure): 
+ * กระเป๋าใบนี้ถูกล็อคไว้อย่างแน่นหนา ระบบภายนอกจะไม่สามารถเข้ามาล้วงหรือแอบแก้ไขข้อมูล
  * ไอเทมได้โดยตรง หากมีคนอื่นอยากรู้ว่าในกระเป๋ามีอะไร ระบบจะทำแค่ "ถ่ายเอกสารสำเนา" 
  * รายชื่อของไปให้ดูเท่านั้น เพื่อป้องกันของหายหรือถูกโกง
  */
@@ -27,10 +27,8 @@ public class Inventory {
 
     public static final int MAX_SLOTS = 20;
 
-    // เก็บไอเทมไว้เป็น private final เพื่อป้องกันคนนอกมาแก้ List
     private final List<Item> items;
 
-    // คลาสย่อยทำเป็น private เพื่อซ่อนไม่ให้คนนอกเห็นโครงสร้างภายใน
     private static class Item {
         private final String name;
         private int quantity;
@@ -58,7 +56,14 @@ public class Inventory {
     }
 
     /**
-     * Representation Invariant คอยตรวจสอบว่ากฎของกระเป๋ายังเป็นจริงอยู่หรือไม่ 
+     * Observer คืนจำนวนชนิดของไอเท็มใน Inventory
+     */
+    public int size() {
+        return items.size();
+    }
+
+    /**
+     * คอยตรวจสอบว่ากฎเหล็กของกระเป๋ายังเป็นจริงอยู่หรือไม่ (Representation Invariant)
      */
     private void checkRep() {
         assert items != null : "items must not be null";
