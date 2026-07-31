@@ -22,6 +22,7 @@ public class InventoryTest {
         testCreator();
         testInventoryFromList();
         testContains();
+        testCount();
 
         System.out.println();
         System.out.println("Passed: " + passed);
@@ -202,5 +203,53 @@ public class InventoryTest {
             emptyPassed = true;
         }
         check("Test 15: contains empty string throws exception", emptyPassed);
+    }
+
+    private static void testCount() {
+        System.out.println("-- Count Observer --");
+
+        Inventory inv =
+            new Inventory(
+                Arrays.asList(
+                    "Potion",
+                    "Sword"
+                )
+            );
+
+        check(
+            "Test 16: count existing item",
+            inv.count("Potion") == 1
+        );
+
+        check(
+            "Test 17: count missing item",
+            inv.count("Shield") == 0
+        );
+
+        boolean nullPassed = false;
+
+        try {
+            inv.count(null);
+        } catch (IllegalArgumentException e) {
+            nullPassed = true;
+        }
+
+        check(
+            "Test 18: count null throws exception",
+            nullPassed
+        );
+
+        boolean emptyPassed = false;
+
+        try {
+            inv.count("");
+        } catch (IllegalArgumentException e) {
+            emptyPassed = true;
+        }
+
+        check(
+            "Test 19: count empty string throws exception",
+            emptyPassed
+        );
     }
 }
