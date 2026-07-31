@@ -184,5 +184,23 @@ public class InventoryTest {
 
         // Test 13: does not contain missing item
         check("Test 13: does not contain missing item (Shield)", !inv.contains("Shield"));
+
+        // Test 14: contains(null) throws IllegalArgumentException
+        boolean nullPassed = false;
+        try {
+            inv.contains(null);
+        } catch (IllegalArgumentException e) {
+            nullPassed = true;
+        }
+        check("Test 14: contains null throws exception", nullPassed);
+
+        // Test 15: contains("") throws IllegalArgumentException
+        boolean emptyPassed = false;
+        try {
+            inv.contains("");
+        } catch (IllegalArgumentException e) {
+            emptyPassed = true;
+        }
+        check("Test 15: contains empty string throws exception", emptyPassed);
     }
 }
