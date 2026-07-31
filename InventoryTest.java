@@ -15,12 +15,22 @@ public class InventoryTest {
 
     public static void main(String[] args) {
 
-        Inventory inv = new Inventory();
-
-        check("new inventory created", inv != null);
+        testCreator();
 
         System.out.println();
         System.out.println("Passed: " + passed);
         System.out.println("Failed: " + failed);
+    }
+
+    private static void testCreator() {
+
+        System.out.println("-- Creator --");
+
+        Inventory inv = new Inventory();
+
+        check("new inventory created", inv != null);
+
+        check("new inventory size = 0",
+                inv.size() == 0);
     }
 }
