@@ -117,6 +117,27 @@ public class Inventory {
     }
 
     /**
+     * Observer คืนจำนวนชิ้นของไอเท็มที่ระบุ (พร้อม Input Validation)
+     */
+    public int count(String itemName) {
+        if (itemName == null) {
+            throw new IllegalArgumentException("itemName must not be null");
+        }
+
+        if (itemName.isEmpty()) {
+            throw new IllegalArgumentException("itemName must not be empty");
+        }
+
+        for (Item item : items) {
+            if (item.getName().equals(itemName)) {
+                return item.getQuantity();
+            }
+        }
+
+        return 0;
+    }
+
+    /**
      * Representation Invariant คอยตรวจสอบว่ากฎเหล็กของกระเป๋ายังเป็นจริงอยู่หรือไม่
      */
     private void checkRep() {
