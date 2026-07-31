@@ -20,7 +20,7 @@ import java.util.Set;
  * 
  * ระบบรักษาความปลอดภัย (Safety from Rep Exposure): 
  * กระเป๋าใบนี้ถูกล็อคไว้อย่างแน่นหนา ระบบภายนอกจะไม่สามารถเข้ามาล้วงหรือแอบแก้ไขข้อมูล
- * ไอเทมได้โดยตรง หากมีคนอื่นอยากรู้ว่าในกระเป๋ามีอะไร ระบบจะทำแค่ "ถ่ายเอกสารสำهนา" 
+ * ไอเทมได้โดยตรง หากมีคนอื่นอยากรู้ว่าในกระเป๋ามีอะไร ระบบจะทำแค่ "ถ่ายเอกสารสำเนา" 
  * รายชื่อของไปให้ดูเท่านั้น เพื่อป้องกันของหายหรือถูกโกง
  */
 public class Inventory {
@@ -56,17 +56,41 @@ public class Inventory {
     }
 
     /** 
-     * สร้าง Inventory จากรายชื่อไอเทมเริ่มต้น และทำ Defensive Copy
+     * สร้าง Inventory จากรายชื่อไอเทมเริ่มต้น พร้อม Validation และ Defensive Copy
      */
     public Inventory(List<String> initialItems) {
-        this.items = new ArrayList<>();
+        // 1. ตรวจสอบว่า List เป็น null หรือไม่
+        if (initialItems == null) {
+            throw new IllegalArgumentException("initialItems must not be null");
+        }
         
-        // วนลูปหยิบชื่อไอเทมจากข้างนอกมาสร้าง Item ใหม่ใส่กระเป๋าของเราเอง
-        // โดยกำหนดให้ไอเทมแต่ละชนิดเริ่มต้นมีจำนวน 1 ชิ้น
-        if (initialItems != null) {
-            for (String itemName : initialItems) {
-                this.items.add(new Item(itemName, 1));
+        // 2. ตรวจสอบว่าจำนวนเกิน MAX_SLOTS หรือไม่
+        if (initialItems.size() > MAX_SLOTS) {
+            throw new IllegalArgumentException("initialItems exceeds max slots");
+        }
+
+        Set<String> seenNames = new HashSet<>();
+        
+        // วนตรวจสอบข้อมูลนำเข้าแต่ละตัวตามกฎ
+        for (String itemName : initialItems) {
+            // 3. ตรวจสอบว่า Item เป็น null หรือไม่
+            if (itemName == null) {
+                throw new IllegalArgumentException("item name must not be null");
             }
+            // 4. ตรวจสอบว่าชื่อ Item เป็นสตริงว่างหรือไม่
+            if (itemName.isEmpty()) {
+                throw new IllegalArgumentException("item name must not be empty");
+            }
+            // 5. ตรวจสอบชื่อซ้ำ (รองรับทั้งแบบติดกันและไม่ติดกัน)
+            if (!seenNames.add(itemName)) {
+                throw new IllegalArgumentException("duplicate item name: " + itemName);
+            }
+        }
+
+        // 6. ผ่านการตรวจสอบทั้งหมดแล้ว ค่อยสร้างรายการจริง (Defensive Copy)
+        this.items = new ArrayList<>();
+        for (String itemName : initialItems) {
+            this.items.add(new Item(itemName, 1));
         }
         
         checkRep();
@@ -77,6 +101,18 @@ public class Inventory {
      */
     public int size() {
         return items.size();
+    }
+
+    /**
+     * Observer ตรวจสอบว่ามีไอเทมชื่อนี้อยู่ใน Inventory หรือไม่
+     */
+    public boolean contains(String itemName) {
+        for (Item item : items) {
+            if (item.getName().equals(itemName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
