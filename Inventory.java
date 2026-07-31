@@ -20,7 +20,7 @@ import java.util.Set;
  * 
  * ระบบรักษาความปลอดภัย (Safety from Rep Exposure): 
  * กระเป๋าใบนี้ถูกล็อคไว้อย่างแน่นหนา ระบบภายนอกจะไม่สามารถเข้ามาล้วงหรือแอบแก้ไขข้อมูล
- * ไอเทมได้โดยตรง หากมีคนอื่นอยากรู้ว่าในกระเป๋ามีอะไร ระบบจะทำแค่ "ถ่ายเอกสารสำเนา" 
+ * ไอเทมได้โดยตรง หากมีคนอื่นอยากรู้ว่าในกระเป๋ามีอะไร ระบบจะทำแค่ "ถ่ายเอกสารสำهนา" 
  * รายชื่อของไปให้ดูเท่านั้น เพื่อป้องกันของหายหรือถูกโกง
  */
 public class Inventory {
@@ -48,10 +48,27 @@ public class Inventory {
     }
 
     /** 
-     * Creator: สร้าง Inventory ว่างๆ ขึ้นมา
+     * สร้าง Inventory ว่างๆ ขึ้นมา
      */
     public Inventory() {
         this.items = new ArrayList<>();
+        checkRep();
+    }
+
+    /** 
+     * สร้าง Inventory จากรายชื่อไอเทมเริ่มต้น และทำ Defensive Copy
+     */
+    public Inventory(List<String> initialItems) {
+        this.items = new ArrayList<>();
+        
+        // วนลูปหยิบชื่อไอเทมจากข้างนอกมาสร้าง Item ใหม่ใส่กระเป๋าของเราเอง
+        // โดยกำหนดให้ไอเทมแต่ละชนิดเริ่มต้นมีจำนวน 1 ชิ้น
+        if (initialItems != null) {
+            for (String itemName : initialItems) {
+                this.items.add(new Item(itemName, 1));
+            }
+        }
+        
         checkRep();
     }
 
@@ -63,7 +80,7 @@ public class Inventory {
     }
 
     /**
-     * คอยตรวจสอบว่ากฎเหล็กของกระเป๋ายังเป็นจริงอยู่หรือไม่ (Representation Invariant)
+     * Representation Invariant คอยตรวจสอบว่ากฎเหล็กของกระเป๋ายังเป็นจริงอยู่หรือไม่
      */
     private void checkRep() {
         assert items != null : "items must not be null";
