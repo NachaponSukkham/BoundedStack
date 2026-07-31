@@ -45,6 +45,10 @@ public class Inventory {
         public int getQuantity() {
             return quantity;
         }
+
+        public void increaseQuantity() {
+            quantity++;
+        }
     }
 
     /** 
@@ -135,6 +139,35 @@ public class Inventory {
         }
 
         return 0;
+    }
+
+    /**
+     * Mutator เพิ่มไอเทมเข้ากระเป๋า
+     */
+    public void addItem(String itemName) {
+        if (itemName == null) {
+            throw new IllegalArgumentException("itemName must not be null");
+        }
+
+        if (itemName.isEmpty()) {
+            throw new IllegalArgumentException("itemName must not be empty");
+        }
+
+        for (Item item : items) {
+            if (item.getName().equals(itemName)) {
+                item.increaseQuantity();
+                checkRep();
+                return;
+            }
+        }
+
+        if (items.size() >= MAX_SLOTS) {
+            throw new IllegalArgumentException("inventory full");
+        }
+
+        items.add(new Item(itemName, 1));
+        
+        checkRep();
     }
 
     /**
