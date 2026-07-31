@@ -153,7 +153,6 @@ public class Inventory {
             throw new IllegalArgumentException("itemName must not be empty");
         }
 
-        // กรณีมีไอเทมนี้อยู่แล้ว ให้เพิ่มจำนวน
         for (Item item : items) {
             if (item.getName().equals(itemName)) {
                 item.increaseQuantity();
@@ -162,7 +161,6 @@ public class Inventory {
             }
         }
 
-        // กรณีเป็นไอเทมใหม่ ต้องเช็คว่ากระเป๋าเต็มหรือไม่
         if (items.size() >= MAX_SLOTS) {
             throw new IllegalArgumentException("inventory full");
         }

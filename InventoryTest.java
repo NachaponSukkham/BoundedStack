@@ -18,12 +18,12 @@ public class InventoryTest {
     }
 
     public static void main(String[] args) {
-
         testCreator();
         testInventoryFromList();
         testContains();
         testCount();
         testAddItem();
+        testAddItemFullCapacity();
 
         System.out.println();
         System.out.println("Passed: " + passed);
@@ -191,7 +191,7 @@ public class InventoryTest {
     }
 
     private static void testCount() {
-        System.out.println("Count Observer");
+        System.out.println("-- Count Observer --");
 
         Inventory inv =
             new Inventory(
@@ -239,7 +239,7 @@ public class InventoryTest {
     }
 
     private static void testAddItem() {
-        System.out.println("Add Item Mutator");
+        System.out.println("-- Add Item Mutator --");
 
         Inventory inv = new Inventory();
 
@@ -291,6 +291,30 @@ public class InventoryTest {
         check(
             "Test 25: addItem empty throws exception",
             emptyPassed
+        );
+    }
+
+    private static void testAddItemFullCapacity() {
+        System.out.println("-- Add Item Full Capacity --");
+
+        Inventory inv = new Inventory();
+
+        for (int i = 1; i <= 20; i++) {
+            inv.addItem("Item" + i);
+        }
+
+        check("Test 25 (cont.): inventory size is 20", inv.size() == 20);
+
+        boolean fullPassed = false;
+        try {
+            inv.addItem("ExtraItem");
+        } catch (IllegalArgumentException e) {
+            fullPassed = true;
+        }
+
+        check(
+            "Test 26: adding item when inventory is full throws exception",
+            fullPassed
         );
     }
 }
